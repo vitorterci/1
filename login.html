@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prog. Master Max - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Open+Sans&display=swap" rel="stylesheet">
+    <!-- Adicionando Font Awesome para os ícones do menu -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variáveis de cor baseadas no esquema fornecido */
+        
+         :root {
+            --bg-color: #f4f4f4;
+            --text-color: #333;
+            --sidebar-bg: #e0e0e0;
+            --card-bg: #ffffff;
+            --header-bg: #2a2a2a;
+            --accent-color: #9b59b6;
+            --bullet-color: #6b2c91;
+            --code-bg: #f0e6ff;
+            --code-color: #6b2c91;
+            --light-text: #ffffff;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --input-border: #ddd;
+            --input-focus: rgba(155, 89, 182, 0.3);
+        }
+        
+        [data-theme="dark"] {
+            --bg-color: #000;
+            --text-color: #fff;
+            --sidebar-bg: #111;
+            --card-bg: #1a1a1a;
+            --header-bg: #6b2c91;
+            --accent-color: #c67cf4;
+            --bullet-color: #8230c6;
+            --code-bg: #2e2e3e;
+            --code-color: #c792ea;
+            --input-border: #444;
+            --input-focus: rgba(198, 124, 244, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header.site-header {
+            background-color: var(--header-bg);
+            /* Fundo escuro conforme imagem */
+            color: var(--light-text);
+            padding: 10px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+            gap: 20px;
+            margin-right: 15%;
+        }
+        /* Botões laterais esquerdos */
+        
+        .header-left-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .btn-header {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-align: center;
+            min-width: 80px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo {
+            height: 90px;
+            background: #f4f4f4;
+            border-radius: 20PX;
+        }
+        
+        .site-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--light-text);
+        }
+        
+        .main-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        
+        .nav-link {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            padding: 5px 0;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            color: var(--accent-color);
+        }
+        
+        .nav-link.active {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        /* ESTILOS DO DROPDOWN CORRIGIDOS */
+        
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--card-bg);
+            min-width: 450px;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            z-index: 1001;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            border-top: 3px solid var(--accent-color);
+            margin-top: 10px;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: grid;
+        }
+        
+        .menu-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .menu-item {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--accent-color);
+        }
+        
+        .menu-item:hover {
+            background-color: var(--code-bg);
+            color: var(--code-color);
+            transform: translateX(5px);
+        }
+        /* Estilos do formulário de login */
+        
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 200px);
+            padding: 40px 20px;
+            flex-direction: column;
+        }
+        
+        .auth-box {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .auth-box h2 {
+            color: var(--accent-color);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8rem;
+            font-family: 'Cinzel', serif;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--input-border);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        
+        .form-group input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--input-focus);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            background-color: var(--bullet-color);
+            transform: translateY(-2px);
+        }
+        
+        .switch-form {
+            text-align: center;
+            margin-top: 25px;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+        
+        .switch-form a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .switch-form a:hover {
+            color: var(--bullet-color);
+            text-decoration: underline;
+        }
+        
+        footer.rodape {
+            text-align: center;
+            padding: 20px;
+            color: var(--light-text);
+            font-size: 0.9rem;
+            background-color: var(--header-bg);
+            transition: background-color 0.3s;
+        }
+        
+        footer.rodape p {
+            margin-bottom: 10px;
+        }
+        /* Estilos do Toggle Switch de Tema */
+        
+        .theme-switch-wrapper {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .theme-switch {
+            display: inline-block;
+            height: 34px;
+            position: relative;
+            width: 60px;
+        }
+        
+        .theme-switch input {
+            display: none;
+        }
+        
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5px;
+        }
+        
+        .slider:before {
+            background-color: #fff;
+            bottom: 4px;
+            content: "";
+            height: 26px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 26px;
+            z-index: 2;
+        }
+        
+        input:checked+.slider {
+            background-color: var(--accent-color);
+        }
+        
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+        
+        .slider.round {
+            border-radius: 34px;
+        }
+        
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        
+        .slider i {
+            font-size: 14px;
+            color: #f1c40f;
+        }
+        
+        .icon-sun {
+            margin-left: 2px;
+        }
+        
+        .icon-moon {
+            margin-right: 2px;
+            color: #f1c40f !important;
+        }
+        /* Efeitos adicionais */
+        
+        .auth-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-color), var(--bullet-color));
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+        /* Placeholder styling */
+        
+         ::placeholder {
+            color: var(--text-color);
+            opacity: 0.5;
+        }
+        
+        .botao-flutuante {
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            margin-left: 10PX;
+            margin-right: 290PX;
+        }
+        
+        .botao-flutuante:hover {
+            background: #a655d9;
+            transform: scale(1.05);
+        }
+        /* Responsividade */
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .main-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .auth-box {
+                padding: 30px 20px;
+            }
+            .dropdown-menu {
+                position: static;
+                transform: none;
+                min-width: 100%;
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="header-container">
+            <!-- Botão Voltar à esquerda conforme imagem -->
+            <div class="header-left-buttons">
+                <a href="index.html" class="btn-header">Voltar</a>
+            </div>
+
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="img/logo.png" alt="Logo" class="logo">
+                </a>
+                <span class="site-title">PROG. MASTER MAX</span>
+            </div>
+
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link active">Início</a>
+
+                <!-- DROPDOWN CORRIGIDO -->
+                <div class="dropdown" id="langDropdown">
+                    <div class="nav-link" id="langBtn">
+                        Linguagens <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; transition: 0.3s;"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <div class="menu-column">
+                            <a href="HTML.html" class="menu-item"><i class="fa-brands fa-html5"></i> HTML</a>
+                            <a href="CSS.html" class="menu-item"><i class="fa-brands fa-css3-alt"></i> CSS</a>
+                            <a href="#" class="menu-item"><i class="fa-brands fa-react"></i> React</a>
+                            <a href="cpp.html" class="menu-item"><i class="fa-brands fa-code"></i> C++</a>
+                        </div>
+                        <div class="menu-column">
+                            <a href="java.html" class="menu-item"><i class="fa-brands fa-java"></i> Java</a>
+                            <a href="python.html" class="menu-item"><i class="fa-brands fa-python"></i> Python</a>
+                            <a href="php.html" class="menu-item"><i class="fa-brands fa-php"></i> PHP</a>
+                            <a href="c.html" class="menu-item"><i class="fa-solid fa-code"></i> C#</a>
+                        </div>
+                        <div class="menu-column">
+                            <a href="#" class="menu-item"><i class="fa-brands fa-rust"></i> Rust</a>
+                            <a href="swift.html" class="menu-item"><i class="fa-brands fa-swift"></i> Swift</a>
+                            <a href="ruby.html" class="menu-item"><i class="fa-solid fa-gem"></i> Ruby</a>
+                            <a href="go.html" class="menu-item"><i class="fa-solid fa-terminal"></i> Go</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="curiosidades.html" class="nav-link">Curiosidades</a>
+                <a href="tutoriais.html" class="nav-link">tutoriais</a>
+                <a href="sobre.html" class="nav-link">Sobre</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Toggle Switch de Tema Estético -->
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round">
+                <i class="fa-solid fa-sun icon-sun"></i>
+                <i class="fa-solid fa-moon icon-moon"></i>
+            </div>
+        </label>
+    </div>
+
+    <div class="auth-container">
+        <!-- Formulário de Login -->
+        <div class="auth-box">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+            </form>
+            <div class="switch-form">
+                <p>Não tem uma conta? <a href="#" id="showRegister">Registre-se</a></p>
+            </div>
+        </div>
+
+        <!-- Formulário de Registro (inicialmente oculto) -->
+        <div class="auth-box" id="registerBox" style="display: none;">
+            <h2>Registrar</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Nome Completo</label>
+                    <input type="text" id="registerName" required placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" required placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <input type="password" id="registerPassword" required placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirmar Senha</label>
+                    <input type="password" id="registerConfirmPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn">Criar Conta</button>
+            </form>
+            <div class="switch-form">
+                <p>Já tem uma conta? <a href="#" id="showLogin">Faça login</a></p>
+            </div>
+        </div>
+    </div>
+
+            <footer class="rodape">
+            <div class="rodape-content">
+                <div class="rodape-info">
+                    <p>© 2025 Prog. Master Max - Todos os direitos reservados</p>
+                    <p>Desenvolvido com 💜 pelos estudantes de desenvolvimento web (é IA)</p>
+                </div>
+                <div class="redes-sociais">
+                    <a href="#" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="#" title="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                </div>
+                <div class="auxilio-links">
+                    <span class="auxilio-titulo">Apoio:</span>
+                    <a href="https://flexboxlabs.netlify.app/" target="_blank">Flexbox Labs</a>
+                    <a href="https://chat.deepseek.com/" target="_blank">Deepseek</a>
+                </div>
+            </div>
+        </footer>
+
+
+
+    <script>
+        // Alternar entre login e registro
+        document.getElementById('showRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('.auth-box').style.display = 'none';
+            document.getElementById('registerBox').style.display = 'block';
+        });
+
+        document.getElementById('showLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('registerBox').style.display = 'none';
+            document.querySelector('.auth-box').style.display = 'block';
+        });
+
+        // Validação dos formulários
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+
+            alert('Login realizado com sucesso! Redirecionando...');
+            // Aqui você adicionaria a lógica real de login
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+            if (!name || !email || !password || !confirmPassword) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert('As senhas não coincidem!');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('A senha deve ter pelo menos 6 caracteres!');
+                return;
+            }
+
+            alert('Conta criada com sucesso! Faça login para continuar.');
+            document.getElementById('registerBox').style.display = 'none';
+            document.querySelector('.auth-box').style.display = 'block';
+            // Aqui você adicionaria a lógica real de registro
+        });
+
+        // A lógica de tema agora é gerenciada pelo script.js
+    </script>
+    <script src="script.js"></script>
+</body>
+
+</html>

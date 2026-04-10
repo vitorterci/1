@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividades - Prog. Master Max</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para a página de atividades */
+        
+        .filtros-sidebar {
+            margin-bottom: 20px;
+        }
+        
+        .filtro-dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .filtro-btn {
+            width: 100%;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .filtro-btn:hover {
+            background: #a655d9;
+            transform: translateX(5px);
+            position: relative;
+        }
+        
+        .barra-lateral:not(.expandida) .filtro-btn:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--accent-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            margin-left: 10px;
+            font-size: 0.85rem;
+            z-index: 2000;
+        }
+        
+        .filtro-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 8px;
+            margin-top: 5px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .filtro-dropdown.ativo .filtro-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .filtro-item {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .filtro-item:hover {
+            background: rgba(155, 89, 182, 0.1);
+            color: var(--accent-color);
+            padding-left: 20px;
+        }
+        
+        .filtro-item.ativo {
+            background: var(--accent-color);
+            color: white;
+        }
+        /* Grid de Seleção (Linguagem/Nível) */
+        
+        .grid-selecao {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .cartao-selecao {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-bottom: 5px solid var(--accent-color);
+        }
+        
+        .cartao-selecao:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .cartao-selecao i {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .cartao-selecao h3 {
+            margin: 0;
+            font-family: 'Cinzel', serif;
+        }
+        
+        .cartao-selecao p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        /* Área de Seleção de Dificuldade */
+        
+        #sessaoDificuldade {
+            display: none;
+        }
+        
+        .btn-voltar-dificuldade {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        /* Área de Exercícios */
+        
+        #areaExercicios {
+            display: none;
+        }
+        
+        .btn-voltar-selecao {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .atividade-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--accent-color);
+        }
+        
+        .opcoes-lista {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .opcao-item {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        
+        .opcao-item:hover {
+            background: rgba(155, 89, 182, 0.1);
+            border-color: var(--accent-color);
+        }
+        
+        .opcao-item.correta {
+            background: #2ecc71 !important;
+            color: white !important;
+            border-color: #27ae60 !important;
+        }
+        
+        .opcao-item.errada {
+            background: #e74c3c !important;
+            color: white !important;
+            border-color: #c0392b !important;
+        }
+        /* Feedback de erro com atalho */
+        
+        .feedback-erro {
+            background: #ffe6e6;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .feedback-erro.mostrar {
+            display: block;
+        }
+        
+        .feedback-erro p {
+            margin: 0 0 10px 0;
+            color: #c0392b;
+            font-weight: 600;
+        }
+        
+        .btn-atalho {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 10px;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .btn-atalho:hover {
+            background: #c0392b;
+            transform: translateX(3px);
+        }
+        /* Relatório Final */
+        
+        #relatorioFinal {
+            display: none;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-box {
+            padding: 20px;
+            border-radius: 15px;
+            background: var(--bg-color);
+        }
+        
+        .stat-num {
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: block;
+            color: var(--accent-color);
+        }
+        
+        .video-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        
+        .video-item i {
+            color: #e74c3c;
+            font-size: 1.5rem;
+        }
+        
+        .video-item a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .recomendacao-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .recomendacao-item strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--accent-color);
+        }
+        
+        .recomendacao-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        
+        .recomendacao-links a {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+        
+        .recomendacao-links a:hover {
+            background: #a655d9;
+            transform: translateY(-2px);
+        }
+        /* Responsividade da sidebar com filtros */
+        
+        .barra-lateral:not(.expandida) .filtro-btn {
+            padding: 10px;
+            font-size: 0;
+        }
+        
+        .barra-lateral:not(.expandida) .filtro-btn i:first-child {
+            font-size: 1.2rem;
+        }
+        
+        .barra-lateral:not(.expandida) .filtro-btn span {
+            display: none;
+        }
+        
+        .barra-lateral:not(.expandida) .filtro-btn i:last-child {
+            display: none;
+        }
+        
+        .barra-lateral:not(.expandida) .filtro-menu {
+            left: 100%;
+            top: 0;
+            margin-top: 0;
+            margin-left: 10px;
+        }
+        
+        .barra-lateral:not(.expandida) .filtros-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        /* Modo Foco */
+        
+        body.foco-ativo .site-header,
+        body.foco-ativo .barra-lateral {
+            display: none !important;
+        }
+        
+        body.foco-ativo .conteudo-principal {
+            margin: 0 auto !important;
+            width: 90% !important;
+            max-width: 800px;
+            padding-top: 50px;
+        }
+        /* Estilos para cartões de dificuldade */
+        
+        .cartao-dificuldade {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-bottom: 5px solid var(--accent-color);
+        }
+        
+        .cartao-dificuldade:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .cartao-dificuldade i {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .cartao-dificuldade h3 {
+            margin: 0;
+            font-family: 'Cinzel', serif;
+        }
+        
+        .cartao-dificuldade p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="img/logo.png" alt="Logo" class="logo">
+                </a>
+                <span class="site-title">Prog. Master Max</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="atividades.html" class="nav-link active">Atividades</a>
+                <div class="dropdown" id="langDropdown">
+                    <div class="nav-link" id="langBtn">
+                        Linguagens <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; transition: 0.3s;"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <div class="menu-column">
+                            <a href="HTML.html" class="menu-item"><i class="fa-brands fa-html5"></i> HTML</a>
+                            <a href="CSS.html" class="menu-item"><i class="fa-brands fa-css3-alt"></i> CSS</a>
+                            <a href="JavaScript.html" class="menu-item"><i class="fa-brands fa-js"></i> JavaScript</a>
+                            <a href="#" class="menu-item"><i class="fa-brands fa-react"></i> React</a>
+                            <a href="cpp.html" class="menu-item"><i class="fa-brands fa-code"></i> C++</a>
+                        </div>
+                        <div class="menu-column">
+                            <a href="java.html" class="menu-item"><i class="fa-brands fa-java"></i> Java</a>
+                            <a href="python.html" class="menu-item"><i class="fa-brands fa-python"></i> Python</a>
+                            <a href="php.html" class="menu-item"><i class="fa-brands fa-php"></i> PHP</a>
+                            <a href="c.html" class="menu-item"><i class="fa-solid fa-code"></i> C#</a>
+                        </div>
+                        <div class="menu-column">
+                            <a href="#" class="menu-item"><i class="fa-brands fa-rust"></i> Rust</a>
+                            <a href="swift.html" class="menu-item"><i class="fa-brands fa-swift"></i> Swift</a>
+                            <a href="ruby.html" class="menu-item"><i class="fa-solid fa-gem"></i> Ruby</a>
+                            <a href="go.html" class="menu-item"><i class="fa-solid fa-terminal"></i> Go</a>
+                        </div>
+                    </div>
+                </div>
+                <a href="curiosidades.html" class="nav-link">Curiosidades</a>
+                <a href="tutoriais.html" class="nav-link">Tutoriais</a>
+                <a href="sobre.html" class="nav-link">Sobre</a>
+            </nav>
+            <div class="header-actions">
+                <a href="login.html" class="nav-link">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <aside class="barra-lateral">
+        <button class="botao-flutuante" onclick="window.location.href='index.html'" title="Voltar">Voltar</button>
+        <button class="barra-toggle" id="barraToggle">||||||</button>
+        <div class="filtros-sidebar">
+            <br>
+
+
+
+        </div>
+
+        <div class="cartao">
+            <h2><i class="fas fa-tasks"></i> Atividades</h2>
+            <p>Escolha um tópico para começar a praticar.</p>
+        </div>
+    </aside>
+
+    <main class="conteudo-principal">
+        <button class="filtro-btn" style="margin-top: 0px; background: #e74c3c; width: 10%;position: fixed;" onclick="toggleModoFoco()" data-tooltip="Modo Foco">
+            <i class="fas fa-bullseye"></i> <span>Modo Foco</span>
+        
+        </button>
+        <div id="sessaoSelecao">
+            <h1>Escolha seu Desafio</h1>
+
+            <div class="grid-selecao" id="gridSelecao">
+                <!-- Gerado por JS -->
+            </div>
+        </div>
+
+        <div id="sessaoDificuldade">
+            <button class="btn-voltar-dificuldade" onclick="voltarSelecaoLinguagem()"><i class="fas fa-arrow-left"></i> Voltar</button>
+            <h1>Escolha o Nível de Dificuldade</h1>
+            <div class="grid-selecao" id="gridDificuldade">
+                <!-- Gerado por JS -->
+            </div>
+        </div>
+
+        <div id="areaExercicios">
+            <button class="btn-voltar-selecao" onclick="voltarSelecao()"><i class="fas fa-arrow-left"></i> Voltar</button>
+            <h2 id="tituloSessao">Exercícios</h2>
+            <div id="listaAtividades"></div>
+            <button class="botao" style="width: 100%; margin-top: 20px;" onclick="finalizarAtividades()">Finalizar e Ver Relatório</button>
+        </div>
+
+        <div id="relatorioFinal">
+            <h1>Relatório de Desempenho</h1>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-num" id="resAcertos">0</span>
+                    <span>Acertos</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-num" id="resErros">0</span>
+                    <span>Erros</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-num" id="resPerc">0%</span>
+                    <span>Aproveitamento</span>
+                </div>
+            </div>
+
+            <div id="seccaoRecomendacoes" style="text-align: left; margin-top: 30px;">
+                <h3><i class="fas fa-book"></i> Recomendações de Estudo</h3>
+                <div id="listaRecomendacoes"></div>
+            </div>
+
+            <button class="botao" style="margin-top: 30px;" onclick="location.reload()">Tentar Outros Desafios</button>
+        </div>
+
+        <!-- Toggle Switch de Tema Estético -->
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round">
+                <i class="fa-solid fa-sun icon-sun"></i>
+                <i class="fa-solid fa-moon icon-moon"></i>
+            </div>
+        </label>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        const atividades = [{
+            id: 1,
+            linguagem: 'html',
+            nivel: 'iniciante',
+            pergunta: 'Qual tag cria um link?',
+            opcoes: ['<link>', '<a>', '<href>', '<url>'],
+            correta: 1,
+            topico: 'Tags HTML',
+            pagina: 'HTML.html',
+            video: {
+                t: 'Links HTML',
+                u: 'https://youtube.com/results?search_query=links+html'
+            }
+        }, {
+            id: 2,
+            linguagem: 'css',
+            nivel: 'iniciante',
+            pergunta: 'Propriedade para cor do texto?',
+            opcoes: ['text-color', 'font-color', 'color', 'bg-color'],
+            correta: 2,
+            topico: 'Propriedades CSS',
+            pagina: 'CSS.html',
+            video: {
+                t: 'CSS Colors',
+                u: 'https://youtube.com/results?search_query=css+colors'
+            }
+        }, {
+            id: 3,
+            linguagem: 'javascript',
+            nivel: 'intermediario',
+            pergunta: 'Declaração constante?',
+            opcoes: ['var', 'let', 'const', 'set'],
+            correta: 2,
+            topico: 'Variáveis',
+            pagina: 'JavaScript.html',
+            video: {
+                t: 'JS Const Let',
+                u: 'https://youtube.com/results?search_query=js+const+let'
+            }
+        }, {
+            id: 4,
+            linguagem: 'python',
+            nivel: 'iniciante',
+            pergunta: 'Função de saída?',
+            opcoes: ['echo', 'printf', 'log', 'print'],
+            correta: 3,
+            topico: 'Funções Básicas',
+            pagina: 'python.html',
+            video: {
+                t: 'Python Print',
+                u: 'https://youtube.com/results?search_query=python+print'
+            }
+        }];
+
+        let filtros = {
+            lang: 'todas',
+            nivel: 'todos'
+        };
+        let linguagemSelecionada = '';
+        let respostasUsuario = [];
+
+        function init() {
+            const grid = document.getElementById('gridSelecao');
+            const linguagens = [{
+                id: 'html',
+                n: 'HTML',
+                i: 'fa-brands fa-html5'
+            }, {
+                id: 'css',
+                n: 'CSS',
+                i: 'fa-brands fa-css3-alt'
+            }, {
+                id: 'javascript',
+                n: 'JavaScript',
+                i: 'fa-brands fa-js'
+            }, {
+                id: 'react',
+                n: 'React',
+                i: 'fa-brands fa-react'
+            }, {
+                id: 'cpp',
+                n: 'C++',
+                i: 'fa-brands fa-code'
+            }, {
+                id: 'java',
+                n: 'Java',
+                i: 'fa-brands fa-java'
+            }, {
+                id: 'python',
+                n: 'Python',
+                i: 'fa-brands fa-python'
+            }, {
+                id: 'php',
+                n: 'PHP',
+                i: 'fa-brands fa-php'
+            }, {
+                id: 'csharp',
+                n: 'C#',
+                i: 'fa-solid fa-code'
+            }, {
+                id: 'rust',
+                n: 'Rust',
+                i: 'fa-brands fa-rust'
+            }, {
+                id: 'swift',
+                n: 'Swift',
+                i: 'fa-brands fa-swift'
+            }, {
+                id: 'ruby',
+                n: 'Ruby',
+                i: 'fa-solid fa-gem'
+            }, {
+                id: 'go',
+                n: 'Go',
+                i: 'fa-solid fa-terminal'
+            }];
+
+            grid.innerHTML = linguagens.map(l => `
+                <div class="cartao-selecao" onclick="selecionarLinguagem('${l.id}', '${l.n}')">
+                    <i class="${l.i}"></i>
+                    <h3>${l.n}</h3>
+                    <p>Clique para escolher a dificuldade</p>
+                </div>
+            `).join('');
+        }
+
+        function selecionarLinguagem(lang, nome) {
+            linguagemSelecionada = lang;
+            document.getElementById('sessaoSelecao').style.display = 'none';
+            document.getElementById('sessaoDificuldade').style.display = 'block';
+
+            const gridDificuldade = document.getElementById('gridDificuldade');
+            const dificuldades = [{
+                id: 'iniciante',
+                n: 'Iniciante',
+                i: 'fas fa-star',
+                desc: 'Conceitos básicos'
+            }, {
+                id: 'intermediario',
+                n: 'Intermediário',
+                i: 'fas fa-star-half-alt',
+                desc: 'Conhecimento intermediário'
+            }, {
+                id: 'avancado',
+                n: 'Avançado',
+                i: 'fas fa-star',
+                desc: 'Desafios complexos'
+            }];
+
+            gridDificuldade.innerHTML = dificuldades.map(d => `
+                <div class="cartao-dificuldade" onclick="iniciarSessao('${lang}', '${d.id}', '${nome}')">
+                    <i class="${d.i}"></i>
+                    <h3>${d.n}</h3>
+                    <p>${d.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function setFiltro(tipo, valor, label) {
+            filtros[tipo] = valor;
+            document.getElementById(tipo === 'lang' ? 'labelLang' : 'labelNivel').innerText = label;
+            document.querySelectorAll(`#drop${tipo === 'lang' ? 'Lang' : 'Nivel'} .filtro-item`).forEach(i => i.classList.remove('ativo'));
+            event.target.classList.add('ativo');
+            toggleFiltro(`drop${tipo === 'lang' ? 'Lang' : 'Nivel'}`);
+        }
+
+        function iniciarSessao(lang, nivel, nomeLinguagem) {
+            const filtradas = atividades.filter(a =>
+                a.linguagem === lang &&
+                a.nivel === nivel
+            );
+
+            if (filtradas.length === 0) {
+                alert('Nenhum exercício encontrado para este filtro.');
+                return;
+            }
+
+            document.getElementById('sessaoDificuldade').style.display = 'none';
+            document.getElementById('areaExercicios').style.display = 'block';
+            document.getElementById('tituloSessao').innerText = `Exercícios de ${nomeLinguagem} - ${nivel.charAt(0).toUpperCase() + nivel.slice(1)}`;
+
+            const container = document.getElementById('listaAtividades');
+            container.innerHTML = filtradas.map(a => `
+                <div class="atividade-card" id="card-${a.id}">
+                    <h3>${a.pergunta}</h3>
+                    <ul class="opcoes-lista">
+                        ${a.opcoes.map((o, i) => `<li class="opcao-item" onclick="responder(${a.id}, ${i})">${o}</li>`).join('')}
+                    </ul>
+                    <div class="feedback-erro" id="feedback-${a.id}">
+                        <p><i class="fas fa-exclamation-circle"></i> Resposta incorreta! Estude mais sobre este tópico:</p>
+                        <div class="recomendacao-links">
+                            <a href="${a.pagina}" target="_blank"><i class="fas fa-book"></i> Leia a lição</a>
+                            <a href="${a.video.u}" target="_blank"><i class="fab fa-youtube"></i> Assista um vídeo</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            respostasUsuario = [];
+        }
+
+        function responder(atvId, index) {
+            const card = document.getElementById(`card-${atvId}`);
+            if(card.classList.contains('respondida')) return;
+            
+            card.classList.add('respondida');
+            const atv = atividades.find(a => a.id === atvId);
+            const itens = card.querySelectorAll('.opcao-item');
+            
+            const acerto = index === atv.correta;
+            respostasUsuario.push({ id: atvId, acerto: acerto });
+
+            itens[index].classList.add(acerto ? 'correta' : 'errada');
+            if(!acerto) {
+                itens[atv.correta].classList.add('correta');
+                document.getElementById(`feedback-${atvId}`).classList.add('mostrar');
+            }
+        }
+
+        function finalizarAtividades() {
+            if(respostasUsuario.length === 0) { alert('Responda ao menos uma questão!'); return; }
+
+            const acertos = respostasUsuario.filter(r => r.acerto).length;
+            const erros = respostasUsuario.length - acertos;
+            const perc = Math.round((acertos / respostasUsuario.length) * 100);
+
+            document.getElementById('areaExercicios').style.display = 'none';
+            document.getElementById('relatorioFinal').style.display = 'block';
+
+            document.getElementById('resAcertos').innerText = acertos;
+            document.getElementById('resErros').innerText = erros;
+            document.getElementById('resPerc').innerText = `${perc}%`;
+
+            const listaRec = document.getElementById('listaRecomendacoes');
+            listaRec.innerHTML = '';
+            
+            const errosIds = respostasUsuario.filter(r => !r.acerto).map(r => r.id);
+            if(errosIds.length > 0) {
+                errosIds.forEach(id => {
+                    const atv = atividades.find(a => a.id === id);
+                    listaRec.innerHTML += `
+                        <div class="recomendacao-item">
+                            <strong><i class="fas fa-circle"></i> ${atv.topico}</strong>
+                            <div class="recomendacao-links">
+                                <a href="${atv.pagina}" target="_blank"><i class="fas fa-book"></i> Leia a lição</a>
+                                <a href="${atv.video.u}" target="_blank"><i class="fab fa-youtube"></i> ${atv.video.t}</a>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                listaRec.innerHTML = '<p><i class="fas fa-trophy"></i> Excelente! Você não errou nenhuma questão. Continue assim!</p>';
+            }
+        }
+
+        function voltarSelecaoLinguagem() {
+            document.getElementById('sessaoDificuldade').style.display = 'none';
+            document.getElementById('sessaoSelecao').style.display = 'block';
+        }
+
+        function voltarSelecao() {
+            document.getElementById('areaExercicios').style.display = 'none';
+            document.getElementById('sessaoSelecao').style.display = 'block';
+        }
+
+        function toggleModoFoco() {
+            document.body.classList.toggle('foco-ativo');
+        }
+
+        function toggleFiltro(id) {
+            document.getElementById(id).classList.toggle('ativo');
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
+
+</html>
