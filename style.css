@@ -23,6 +23,14 @@
       --code-bg: #2e2e3e;
       --code-color: #c792ea;
   }
+  
+  [data-theme="dark"] body.foco-ativo {
+      background: #0a0a0a;
+  }
+  
+  [data-theme="dark"] body.foco-ativo .conteudo-principal {
+      background: #050505;
+  }
   /* Estrutura Principal */
   
   body {
@@ -36,13 +44,30 @@
       margin: 0;
       padding: 0;
   }
+  
+  body.foco-ativo {
+      background: #1a1a1a;
+  }
+  
+  body.foco-ativo .conteudo-principal {
+      background: #0d0d0d;
+  }
+  
+  body.foco-ativo .cartao,
+  body.foco-ativo .explicacao,
+  body.foco-ativo .atividade-card {
+      background: #1a1a1a;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+  }
   /* Estilos do Header */
   
   .site-header {
-      background-color: #2a2a2a;
+      background: rgba(20, 20, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
       color: white;
       padding: 0;
-      position: fixed;
+      position: sticky;
       top: 0;
       left: 80px;
       right: 0;
@@ -59,7 +84,7 @@
       max-width: 1200px;
       height: 100%;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 40px;
   }
   
   .logo-container {
@@ -80,16 +105,17 @@
   
   .site-title {
       font-family: 'Cinzel', serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: white;
+      font-size: 1.4rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: #c084fc;
       text-decoration: none;
   }
   
   .main-nav {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 25px;
   }
   
   .nav-link {
@@ -97,23 +123,42 @@
       text-decoration: none;
       padding: 8px 15px;
       border-radius: 20px;
-      transition: all 0.3s ease;
+      transition: 0.3s;
       font-weight: 600;
       font-size: 0.95rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
+      position: relative;
+  }
+  
+  .nav-link::after {
+      content: "";
+      display: block;
+      height: 2px;
+      background: #a855f7;
+      width: 0;
+      transition: 0.3s;
+      position: absolute;
+      bottom: -5px;
+      left: 0;
   }
   
   .nav-link:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-      transform: translateY(-2px);
+      color: #c084fc;
+  }
+  
+  .nav-link:hover::after {
+      width: 100%;
   }
   
   .nav-link.active {
-      background-color: var(--accent-color);
+      background: linear-gradient(45deg, #a855f7, #9333ea);
       color: white;
+      border-radius: 20px;
+      padding: 8px 16px;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
   }
   
   .header-actions {
@@ -253,7 +298,9 @@
   .barra-lateral {
       width: 80px;
       /* Barra lateral menor */
-      background: #2a2a2a;
+      background: rgba(42, 42, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255,255,255,0.05);
       /* Cor mais escura */
       padding: 1rem;
       position: fixed;
@@ -484,21 +531,22 @@
       transform: rotate(180deg);
   }
   
-  .dropdown-menu {
+  .dropdown  .dropdown-menu {
       position: absolute;
       top: calc(100% + 15px);
       left: 50%;
       transform: translateX(-50%) translateY(10px);
-      background-color: var(--card-bg);
+      background: rgba(26, 26, 26, 0.95);
+      backdrop-filter: blur(10px);
       min-width: 500px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.1);
       padding: 25px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
       opacity: 0;
-      visibility: hidden;
       transition: all 0.3s ease;
       z-index: 2000;
       border-top: 4px solid var(--accent-color);
@@ -520,9 +568,9 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 12px;
+      padding: 10px 12px;
       text-decoration: none;
-      color: var(--text-color);
+      color: #ddd;
       font-size: 0.95rem;
       font-weight: 600;
       border-radius: 8px;
@@ -530,8 +578,8 @@
   }
   
   .menu-item:hover {
-      background-color: rgba(155, 89, 182, 0.1);
-      color: var(--accent-color);
+      background-color: rgba(155, 89, 182, 0.2);
+      color: #c084fc;
       transform: translateX(5px);
   }
   
@@ -567,6 +615,39 @@
           left: 70px;
       }
   }
+  /* --- Botão Modo Foco Fixo --- */
+  
+  .botao-modo-foco {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+      transition: all 0.3s ease;
+      z-index: 1999;
+  }
+  
+  .botao-modo-foco:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+      background: #9333ea;
+  }
+  
+  .botao-modo-foco.ativo {
+      background: #7e22ce;
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.8);
+  }
+  
   /* --- Estilo do Toggle Switch Estético --- */
   
   .theme-switch-wrapper {
