@@ -617,7 +617,7 @@
   }
   /* --- Botão Modo Foco Fixo --- */
   
-  .botao-modo-foco {
+  .modo-foco-btn {
       position: fixed;
       bottom: 100px;
       right: 30px;
@@ -637,13 +637,13 @@
       z-index: 1999;
   }
   
-  .botao-modo-foco:hover {
+  .modo-foco-btn:hover {
       transform: scale(1.1);
       box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
       background: #9333ea;
   }
   
-  .botao-modo-foco.ativo {
+  .modo-foco-btn.ativo {
       background: #7e22ce;
       box-shadow: 0 0 20px rgba(168, 85, 247, 0.8);
   }

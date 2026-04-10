@@ -614,9 +614,8 @@
     </aside>
 
     <main class="conteudo-principal">
-        <button class="filtro-btn" style="margin-top: 0px; background: #e74c3c; width: 10%;position: fixed;" onclick="toggleModoFoco()" data-tooltip="Modo Foco">
-            <i class="fas fa-bullseye"></i> <span>Modo Foco</span>
-        
+        <button class="modo-foco-btn" onclick="toggleModoFoco()" title="Ativar Modo Foco">
+            <i class="fas fa-bullseye"></i>
         </button>
         <div id="sessaoSelecao">
             <h1>Escolha seu Desafio</h1>
@@ -666,11 +665,6 @@
             <button class="botao" style="margin-top: 30px;" onclick="location.reload()">Tentar Outros Desafios</button>
         </div>
 
-        <!-- Botão Modo Foco -->
-        <button class="botao-modo-foco" onclick="toggleModoFoco()" title="Ativar Modo Foco">
-            <i class="fas fa-eye"></i>
-        </button>
-        
         <!-- Toggle Switch de Tema Estético -->
         <div class="theme-switch-wrapper">
             <label class="theme-switch" for="checkbox">
@@ -951,7 +945,7 @@
 
         function toggleModoFoco() {
             document.body.classList.toggle('foco-ativo');
-            const btn = document.querySelector('.botao-modo-foco');
+            const btn = document.querySelector('.modo-foco-btn');
             if (btn) {
                 btn.classList.toggle('ativo');
             }
